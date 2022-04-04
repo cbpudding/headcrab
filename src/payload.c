@@ -25,40 +25,24 @@ static char SCRIPT_PATH[4096] = {0, 0xB3, 0xDC, 0xF5}; // I'd really like to kno
 
 // ...
 
-void headcrab_init_lua() {
-    // Create the headcrab table
-    lua_createtable(HEADCRAB, 0, 3);
-    // Version information(hc.version)
-    lua_pushstring(HEADCRAB, "version");
-    lua_createtable(HEADCRAB, 0, 3);
-    // FORKS SHOULD NOT CHANGE THE MAJOR/MINOR VERSION! The major/minor version
-    // here is used by scripts to determine whether they're compatible with the
-    // base headcrab library. For the sake of compatibility, forks should
-    // keep this intact and change the "mod" table based on the comment below.
-    lua_pushstring(HEADCRAB, "major");
-    lua_pushinteger(HEADCRAB, VERSION_MAJOR);
-    lua_settable(HEADCRAB, -3);
-    lua_pushstring(HEADCRAB, "minor");
-    lua_pushinteger(HEADCRAB, VERSION_MINOR);
-    lua_settable(HEADCRAB, -3);
-    // This should be used by any forks of the software to indicate what
-    // modifications have been made to the interpreter.
-    //
-    // Example: hc.version.mod.modname = {major = 1, minor = 0}
-    lua_pushstring(HEADCRAB, "mod");
-    lua_createtable(HEADCRAB, 0, 0);
-    lua_settable(HEADCRAB, -3);
-    lua_settable(HEADCRAB, -3);
-    // Platform information(hc.platform)
+void headcrab_init_lua_platform() {
     lua_pushstring(HEADCRAB, "platform");
     lua_createtable(HEADCRAB, 0, 0);
+
     // ...
+
     lua_settable(HEADCRAB, -3);
-    // Process information(hc.process)
+}
+
+void headcrab_init_lua_process() {
     lua_pushstring(HEADCRAB, "process");
     lua_createtable(HEADCRAB, 0, 1);
+
     // TODO: Process arguments
+
     // TODO: Process name
+
+    // hc.process.id
     lua_pushstring(HEADCRAB, "id");
     #ifdef _WIN32
     lua_pushinteger(HEADCRAB, GetCurrentProcessId());
@@ -66,7 +50,49 @@ void headcrab_init_lua() {
     lua_pushinteger(HEADCRAB, getpid());
     #endif
     lua_settable(HEADCRAB, -3);
+
     lua_settable(HEADCRAB, -3);
+}
+
+void headcrab_init_lua_version() {
+    lua_pushstring(HEADCRAB, "version");
+    lua_createtable(HEADCRAB, 0, 3);
+
+    // hc.version.major
+    // FORKS SHOULD NOT CHANGE THE MAJOR/MINOR VERSION! The major/minor version
+    // here is used by scripts to determine whether they're compatible with the
+    // base headcrab library. For the sake of compatibility, forks should
+    // keep this intact and change the "mod" table based on the comment below.
+    lua_pushstring(HEADCRAB, "major");
+    lua_pushinteger(HEADCRAB, VERSION_MAJOR);
+    lua_settable(HEADCRAB, -3);
+
+    // hc.version.minor
+    lua_pushstring(HEADCRAB, "minor");
+    lua_pushinteger(HEADCRAB, VERSION_MINOR);
+    lua_settable(HEADCRAB, -3);
+
+    // hc.version.mod
+    // This should be used by any forks of the software to indicate what
+    // modifications have been made to the interpreter.
+    //
+    // Example: hc.version.mod.modname = {major = 1, minor = 0}
+    lua_pushstring(HEADCRAB, "mod");
+    lua_createtable(HEADCRAB, 0, 0);
+    lua_settable(HEADCRAB, -3);
+
+    lua_settable(HEADCRAB, -3);
+}
+
+void headcrab_init_lua() {
+    // Create the headcrab table
+    lua_createtable(HEADCRAB, 0, 3);
+
+    // Initialize the APIs
+    headcrab_init_lua_platform();
+    headcrab_init_lua_process();
+    headcrab_init_lua_version();
+
     // Wrap everything up and make it accessible
     lua_setglobal(HEADCRAB, "hc");
 }
