@@ -6,6 +6,8 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #define VERSION_MAJOR 0
@@ -25,8 +27,8 @@ static char SCRIPT_PATH[4096] = {0, 0xB3, 0xDC, 0xF5}; // I'd really like to kno
 
 void headcrab_init_lua() {
     // Create the headcrab table
-    lua_createtable(HEADCRAB, 0, 1);
-    // Store the version number
+    lua_createtable(HEADCRAB, 0, 3);
+    // Version information(hc.version)
     lua_pushstring(HEADCRAB, "version");
     lua_createtable(HEADCRAB, 0, 3);
     // FORKS SHOULD NOT CHANGE THE MAJOR/MINOR VERSION! The major/minor version
@@ -47,7 +49,24 @@ void headcrab_init_lua() {
     lua_createtable(HEADCRAB, 0, 0);
     lua_settable(HEADCRAB, -3);
     lua_settable(HEADCRAB, -3);
+    // Platform information(hc.platform)
+    lua_pushstring(HEADCRAB, "platform");
+    lua_createtable(HEADCRAB, 0, 0);
     // ...
+    lua_settable(HEADCRAB, -3);
+    // Process information(hc.process)
+    lua_pushstring(HEADCRAB, "process");
+    lua_createtable(HEADCRAB, 0, 1);
+    // TODO: Process arguments
+    // TODO: Process name
+    lua_pushstring(HEADCRAB, "id");
+    #ifdef _WIN32
+    lua_pushinteger(HEADCRAB, GetCurrentProcessId());
+    #else
+    lua_pushinteger(HEADCRAB, getpid());
+    #endif
+    lua_settable(HEADCRAB, -3);
+    lua_settable(HEADCRAB, -3);
     // Wrap everything up and make it accessible
     lua_setglobal(HEADCRAB, "hc");
 }
