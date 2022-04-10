@@ -2,7 +2,7 @@
 all: headcrab headcrab.so
 
 headcrab: src/main.c injector/src/linux/libinjector.a
-	$(CC) -g -Iinjector/include -lelf -o $@ $^
+	$(CC) -Iinjector/include -o $@ $^
 
 headcrab.so: src/payload.c
 	$(CC) -shared -fPIC -llua5.4 -o $@ $^
