@@ -64,8 +64,34 @@ static int headcrab_peek(lua_State *L) {
         type = lua_tointeger(L, 1);
         addr = (void *)lua_tointeger(L, 2);
         switch(type) {
+            case FLOAT32:
+                lua_pushnumber(L, *(float *)addr);
+                return 1;
+            case FLOAT64:
+                lua_pushnumber(L, *(double *)addr);
+                return 1;
+            case SIGNED8:
+                lua_pushinteger(L, *(int8_t *)addr);
+                return 1;
+            case SIGNED16:
+                lua_pushinteger(L, *(int16_t *)addr);
+                return 1;
+            case SIGNED32:
+                lua_pushinteger(L, *(int32_t *)addr);
+                return 1;
+            case SIGNED64:
+                lua_pushinteger(L, *(int64_t *)addr);
+                return 1;
+            case UNSIGNED8:
+                lua_pushinteger(L, *(uint8_t *)addr);
+                return 1;
+            case UNSIGNED16:
+                lua_pushinteger(L, *(uint16_t *)addr);
+                return 1;
+            case UNSIGNED32:
+                lua_pushinteger(L, *(uint32_t *)addr);
+                return 1;
             case UNSIGNED64:
-                printf("DEBUG: %d %#x\n", type, addr);
                 lua_pushinteger(L, *(uint64_t *)addr);
                 return 1;
             default:
@@ -77,7 +103,46 @@ static int headcrab_peek(lua_State *L) {
 }
 
 static int headcrab_poke(lua_State *L) {
-    // ...
+    void *addr;
+    int argc = lua_gettop(L);
+    enum HEADCRAB_TYPES type;
+    if(argc == 3) {
+        type = lua_tointeger(L, 1);
+        addr = (void *)lua_tointeger(L, 2);
+        switch(type) {
+            case FLOAT32:
+                *(float *)addr = lua_tonumber(L, 3);
+                break;
+            case FLOAT64:
+                *(double *)addr = lua_tonumber(L, 3);
+                break;
+            case SIGNED8:
+                *(int8_t *)addr = lua_tointeger(L, 3);
+                break;
+            case SIGNED16:
+                *(int16_t *)addr = lua_tointeger(L, 3);
+                break;
+            case SIGNED32:
+                *(int32_t *)addr = lua_tointeger(L, 3);
+                break;
+            case SIGNED64:
+                *(int64_t *)addr = lua_tointeger(L, 3);
+                break;
+            case UNSIGNED8:
+                *(uint8_t *)addr = lua_tointeger(L, 3);
+                break;
+            case UNSIGNED16:
+                *(uint16_t *)addr = lua_tointeger(L, 3);
+                break;
+            case UNSIGNED32:
+                *(uint32_t *)addr = lua_tointeger(L, 3);
+                break;
+            case UNSIGNED64:
+                *(uint64_t *)addr = lua_tointeger(L, 3);
+                break;
+        }
+    }
+    return 0;
 }
 
 // Lua State Initialization
