@@ -31,8 +31,6 @@
 #define OS "Linux"
 #elif defined(BSD)
 #define OS "BSD"
-#elif defined(__unix__)
-#define OS "Unix"
 #else
 #error "OS detection failed! Please make sure you're compiling on a supported platform!"
 #endif
